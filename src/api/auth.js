@@ -1,0 +1,93 @@
+import axios, {HttpStatusCode} from "axios";
+
+const API_BASE_URL = "http://localhost:8080";
+const API_AUTH_URL = `${API_BASE_URL}/v1/auth`;
+const API_OAUTH_URL = `${API_BASE_URL}/v1/oauth`;
+
+class AuthApi {
+    async login(username, password) {
+        const response = await axios.post(`${API_AUTH_URL}/authenticate`, {
+            username,
+            password
+        });
+
+        if (response.status >= HttpStatusCode.BadRequest) {
+            console.log(response);
+            return response.data;
+        }
+
+
+        sessionStorage.setItem("member", JSON.stringify(response.data));
+        return response.data;
+    }
+
+    async logout() {
+        const response = await axios.post(`${API_AUTH_URL}/signout`, { headers: this.authHeader() });
+
+        if (response.status >= 400) {
+            console.log(response);
+            return response.data;
+        }
+
+        sessionStorage.removeItem("member");
+        return response.data;
+    }
+
+    async register(email, password, name) {
+        const response = await axios.post(`${API_AUTH_URL}/register`, {
+            email,
+            password,
+            name
+        });
+
+        if (response.status >= 400) {
+            console.log(response);
+            return response.data;
+        }
+
+        sessionStorage.setItem("member", JSON.stringify(response.data));
+        return response.data;
+    }
+
+    authHeader() {
+        const member = JSON.parse(sessionStorage.getItem("member"));
+
+        const res = {};
+        if (member && member.accessToken) {
+            res['Authorization'] = `Bearer ${member.accessToken}`;
+        }
+        return res;
+    }
+    async getMemberInfo() {
+        const response = await axios.get(`${API_AUTH_URL}/info`);
+
+        if (response.status >= 400) {
+            console.log(response);
+            return response.data;
+        }
+
+        sessionStorage.setItem("member", JSON.stringify(response.data));
+        return response.data;
+    }
+
+    async googleLogin({ code, scope }) {
+        const response = await axios.post(`${API_OAUTH_URL}/login/google`, {
+            code
+        });
+        
+        if (response.status >= HttpStatusCode.BadRequest) {
+            console.log(response);
+            return response.data;
+        }
+        console.log(response);
+
+        sessionStorage.setItem("member", JSON.stringify(response.data));
+        return response.data;
+    }
+}
+
+
+export {
+    API_OAUTH_URL
+}
+export default new AuthApi();
