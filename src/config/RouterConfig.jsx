@@ -1,14 +1,8 @@
 import {BrowserRouter as Router, redirect, Route, Routes} from "react-router-dom";
-import App from "../containers/App";
-import Login from "../containers/Login";
-import AuthApi from "../api/auth";
-import Register from "../containers/Register";
-import GoogleLogin from "../components/GoogleLogin";
-
-const Logout = async () => {
-    await AuthApi.logout();
-    return redirect("/");
-};
+import App from "../components/layout/App";
+import Login from "../components/login/Login";
+import Register from "../components/register/Register";
+import ChatBox from "../components/chatting/ChatBox";
 
 const RouterConfig = () => (
     <Router>
@@ -16,8 +10,7 @@ const RouterConfig = () => (
             <Route path="/" element={<App/>}>
                 <Route path="login" element={<Login/>}/>
                 <Route path="register" element={<Register/>}/>
-                <Route path="logout" action={Logout}/>
-                {/*<Route path="/auth/google/redirect" element={<GoogleLogin/>}/>*/}
+                <Route path="chat" element={<ChatBox />} />
             </Route>
         </Routes>
     </Router>

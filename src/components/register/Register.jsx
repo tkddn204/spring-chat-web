@@ -1,4 +1,4 @@
-import Input from "../components/form/Input";
+import Input from "./form/Input";
 
 const Register = () => {
     return (
