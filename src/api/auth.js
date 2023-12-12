@@ -1,8 +1,6 @@
 import axios, {HttpStatusCode} from "axios";
-
-const API_BASE_URL = "http://localhost:8080";
-const API_AUTH_URL = `${API_BASE_URL}/v1/auth`;
-const API_OAUTH_URL = `${API_BASE_URL}/v1/oauth`;
+import {redirect} from "react-router-dom";
+import { API_AUTH_URL, API_OAUTH_URL } from "./url";
 
 class AuthApi {
     async login(username, password) {
@@ -26,10 +24,8 @@ class AuthApi {
 
         if (response.status >= 400) {
             console.log(response);
-            return response.data;
         }
 
-        sessionStorage.removeItem("member");
         return response.data;
     }
 
@@ -58,6 +54,7 @@ class AuthApi {
         }
         return res;
     }
+
     async getMemberInfo() {
         const response = await axios.get(`${API_AUTH_URL}/info`);
 
@@ -70,7 +67,7 @@ class AuthApi {
         return response.data;
     }
 
-    async googleLogin({ code, scope }) {
+    async googleLogin({ code }) {
         const response = await axios.post(`${API_OAUTH_URL}/login/google`, {
             code
         });
@@ -79,15 +76,10 @@ class AuthApi {
             console.log(response);
             return response.data;
         }
-        console.log(response);
 
         sessionStorage.setItem("member", JSON.stringify(response.data));
-        return response.data;
+        return redirect("/chat");
     }
 }
 
-
-export {
-    API_OAUTH_URL
-}
 export default new AuthApi();
