@@ -21,7 +21,7 @@ const ChatMessageList = ({ chatRoom }) => {
     return (
         <div className="w-2/3 border flex flex-col">
             <ChatMessageListHeader />
-            <div class="bg-gray-50 flex-1 overflow-auto">
+            <div className="bg-gray-50 flex-1 overflow-auto">
                 <ul role="list">
                     {Array.isArray(chatMessage) && chatMessage.length ? chatMessage.map((message) => (
                         <>

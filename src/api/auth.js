@@ -1,6 +1,6 @@
 import axios, {HttpStatusCode} from "axios";
-import {redirect} from "react-router-dom";
-import { API_AUTH_URL, API_OAUTH_URL } from "./url";
+import {API_AUTH_URL, API_OAUTH_URL} from "../constant/url";
+import _ from "lodash";
 
 class AuthApi {
     async login(username, password) {
@@ -20,7 +20,9 @@ class AuthApi {
     }
 
     async logout() {
-        const response = await axios.post(`${API_AUTH_URL}/signout`, { headers: this.authHeader() });
+        const response = await axios.post(`${API_AUTH_URL}/signout`,
+            {},
+            {headers: this.authHeader()});
 
         if (response.status >= 400) {
             console.log(response);
@@ -49,8 +51,8 @@ class AuthApi {
         const member = JSON.parse(sessionStorage.getItem("member"));
 
         const res = {};
-        if (member && member.accessToken) {
-            res['Authorization'] = `Bearer ${member.accessToken}`;
+        if (_.has(member, 'accessToken')) {
+            res.Authorization = `Bearer ${member.accessToken}`;
         }
         return res;
     }
@@ -78,7 +80,19 @@ class AuthApi {
         }
 
         sessionStorage.setItem("member", JSON.stringify(response.data));
-        return redirect("/chat");
+    }
+
+    async kakaoLogin({code}) {
+        const response = await axios.post(`${API_OAUTH_URL}/login/kakao`, {
+            code
+        });
+
+        if (response.status >= HttpStatusCode.BadRequest) {
+            console.log(response);
+            return response.data;
+        }
+
+        sessionStorage.setItem("member", JSON.stringify(response.data));
     }
 }
 

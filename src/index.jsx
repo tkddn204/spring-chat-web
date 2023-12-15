@@ -4,12 +4,27 @@ import './index.css';
 import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev";
 import RouterConfig from "./config/RouterConfig";
-import {GoogleOAuthProvider} from "@react-oauth/google";
+import {RouterProvider} from "react-router-dom";
 
-let googleClientId = process.env.REACT_APP_OAUTH_GOOGLE_CLIENT_ID;
-if (!googleClientId) {
-    console.log("google clientId를 환경변수에 입력해주세요.");
+const googleClientId = process.env.REACT_APP_OAUTH_GOOGLE_CLIENT_ID;
+
+const envCheck = () => {
+    if (!googleClientId) {
+        console.log("google client Id를 환경변수에 입력해주세요.");
+        process.exit();
+    }
+    const kakaoClientId = process.env.REACT_APP_OAUTH_KAKAO_CLIENT_ID;
+    if (!kakaoClientId) {
+        console.log("kakao client Id를 환경변수에 입력해주세요.");
+        process.exit();
+    }
+    const kakaoRedirectURI = process.env.REACT_APP_OAUTH_KAKAO_REDIRECT_URI;
+    if (!kakaoRedirectURI) {
+        console.log("kakao redirect URI를 환경변수에 입력해주세요.");
+        process.exit();
+    }
 }
+envCheck();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,9 +32,7 @@ root.render(
         <DevSupport ComponentPreviews={ComponentPreviews}
                     useInitialHook={useInitial}
         >
-            <GoogleOAuthProvider clientId={googleClientId}>
-                <RouterConfig/>
-            </GoogleOAuthProvider>
+            <RouterProvider router={RouterConfig}/>
         </DevSupport>
     </React.StrictMode>
 );

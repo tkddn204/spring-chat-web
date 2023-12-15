@@ -1,14 +1,14 @@
-import {Link, redirect} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AuthApi from "../../api/auth";
 
 const Header = () => {
-
     const member = sessionStorage.getItem('member');
+    const navigate = useNavigate();
 
-    const Logout = async () => {
-        sessionStorage.removeItem("member");
-        await AuthApi.logout();
-        return redirect("/");
+    const Logout = () => {
+        AuthApi.logout()
+            .then(() => sessionStorage.removeItem("member"));
+        navigate("/");
     };
 
     return (
