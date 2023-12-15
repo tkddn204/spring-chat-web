@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_CHAT_URL} from "./url";
+import {API_CHAT_URL} from "../constant/url";
 
 
 class ChatAPI {
