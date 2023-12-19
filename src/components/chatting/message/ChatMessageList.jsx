@@ -1,15 +1,20 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ChatMessageListHeader from "./ChatMessageListHeader";
 import ChatMessageInput from "./ChatMessageInput";
 import DateMessageItem from "./items/DateMessageItem";
+import _ from "lodash";
+import {getChatMessages} from "../../../api/chat";
 
-const ChatMessageList = ({ chatRoom }) => {
-    const [chatMessage, setChatMessage] = useState(chatRoom ? chatRoom.messages : []);
+const ChatMessageList = ({currentRoomId}) => {
+    const [chatMessage, setChatMessage] = useState([]);
     const [nextDay, setNextDay] = useState(new Date(0));
+
+    useEffect(() => {
+        getChatMessages(currentRoomId).then(setChatMessage)
+    }, [currentRoomId]);
 
     const isNewDay = (date) => {
         if (date > nextDay) {
-            // TODO: 다음 Date 계산?
             const tommorow = new Date(date);
             tommorow.setDate(date.getDate() + 1);
             setNextDay(tommorow);
@@ -23,7 +28,7 @@ const ChatMessageList = ({ chatRoom }) => {
             <ChatMessageListHeader />
             <div className="bg-gray-50 flex-1 overflow-auto">
                 <ul role="list">
-                    {Array.isArray(chatMessage) && chatMessage.length ? chatMessage.map((message) => (
+                    {!_.isEmpty(chatMessage) ? chatMessage.map((message) => (
                         <>
                             {isNewDay(message.date) ? <DateMessageItem date={nextDay} /> : null}
                             <li key={message.id} className="flex justify-between gap-x-6 py-5">
@@ -33,7 +38,7 @@ const ChatMessageList = ({ chatRoom }) => {
                     )) : null }
                 </ul>
             </div>
-            <ChatMessageInput />
+            <ChatMessageInput roomId={currentRoomId}/>
         </div>
     )
 }

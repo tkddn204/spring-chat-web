@@ -24,6 +24,6 @@ export const OAUTH_PARAMS = {
         client_id: process.env.REACT_APP_OAUTH_KAKAO_CLIENT_ID,
         redirect_uri: process.env.REACT_APP_OAUTH_KAKAO_REDIRECT_URI,
         response_type: 'code',
-        scope: 'openid profile account_email'
+        scope: 'openid profile_image profile_nickname account_email'
     }
 }
