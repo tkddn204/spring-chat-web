@@ -1,6 +1,7 @@
 import axios, {HttpStatusCode} from "axios";
 import {API_AUTH_URL, API_OAUTH_URL} from "../constant/url";
 import _ from "lodash";
+import {disconnectSocket} from "./chat";
 
 class AuthApi {
     async login(username, password) {
@@ -28,6 +29,7 @@ class AuthApi {
             console.log(response);
         }
 
+        disconnectSocket()
         return response.data;
     }
 
